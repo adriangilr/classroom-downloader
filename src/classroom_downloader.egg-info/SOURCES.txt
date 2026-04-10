@@ -1,0 +1,15 @@
+README.md
+pyproject.toml
+src/auth.py
+src/classroom_client.py
+src/config.py
+src/downloader.py
+src/drive_client.py
+src/main.py
+src/manifest.py
+src/classroom_downloader.egg-info/PKG-INFO
+src/classroom_downloader.egg-info/SOURCES.txt
+src/classroom_downloader.egg-info/dependency_links.txt
+src/classroom_downloader.egg-info/requires.txt
+src/classroom_downloader.egg-info/top_level.txt
+tests/test_paths.py

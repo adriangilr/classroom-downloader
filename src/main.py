@@ -1042,11 +1042,16 @@ def main() -> None:
         # ==========================================================
         # 7) Carpeta base
         # ==========================================================
+        # Usamos la ruta configurada en settings para evitar duplicar folders
+        # como downloads/downloads o rutas anidadas innecesarias.
         carpeta_base = os.path.join(
-            "downloads",
+            settings.download_root,
             f"{course_name}_{course_id}",
         )
-        asegurar_directorio(carpeta_base)
+        carpeta_base = os.path.normpath(carpeta_base)
+
+        if not os.path.exists(carpeta_base):
+            asegurar_directorio(carpeta_base)
 
         perfiles_cache: dict[str, dict[str, str]] = {}
         filas_csv: list[dict[str, str]] = []

@@ -182,16 +182,6 @@ def seleccionar_modo_descarga() -> str:
     opciones = [
         {"id": "all", "display_name": "Bajar todas las entregas activas (TURNED_IN)"},
         {
-            "id": "resubmitted",
-            "display_name": "Bajar solo reentregadas y que necesitan reevaluación",
-        },
-        {"id": "ungraded", "display_name": "Bajar solo no evaluadas"},
-        {"id": "late", "display_name": "Bajar solo entregas tardías"},
-        {
-            "id": "resubmitted_ungraded",
-            "display_name": "Bajar solo reentregadas y no evaluadas",
-        },
-        {
             "id": "late_ungraded",
             "display_name": "Bajar solo tardías y no evaluadas",
         },
@@ -217,12 +207,7 @@ def seleccionar_filtro_actividades() -> str:
     """
     opciones = [
         {"id": "all", "display_name": "Todas las actividades"},
-        {"id": "published", "display_name": "Solo actividades publicadas"},
         {"id": "with_submissions", "display_name": "Solo actividades con entregas"},
-        {
-            "id": "recent",
-            "display_name": f"Solo actividades recientes (últimos {DIAS_RECIENTES} días)",
-        },
     ]
     return seleccionar_opcion(opciones, "un filtro de actividades")["id"]
 
@@ -638,6 +623,45 @@ def tiene_adjuntos(submission: dict[str, Any]) -> bool:
     return len(obtener_adjuntos(submission)) > 0
 
 
+
+
+def obtener_due_date_texto(coursework: dict[str, Any]) -> str:
+    """
+    Convierte dueDate de Classroom a texto YYYY-MM-DD.
+    """
+    due_date = coursework.get("dueDate")
+    if not isinstance(due_date, dict):
+        return ""
+
+    year = due_date.get("year")
+    month = due_date.get("month")
+    day = due_date.get("day")
+
+    if not (year and month and day):
+        return ""
+
+    try:
+        return f"{int(year):04d}-{int(month):02d}-{int(day):02d}"
+    except (TypeError, ValueError):
+        return ""
+
+
+def obtener_due_time_texto(coursework: dict[str, Any]) -> str:
+    """
+    Convierte dueTime de Classroom a texto HH:MM:SS.
+    """
+    due_time = coursework.get("dueTime")
+    if not isinstance(due_time, dict):
+        return ""
+
+    hours = due_time.get("hours", 0)
+    minutes = due_time.get("minutes", 0)
+    seconds = due_time.get("seconds", 0)
+
+    try:
+        return f"{int(hours):02d}:{int(minutes):02d}:{int(seconds):02d}"
+    except (TypeError, ValueError):
+        return ""
 def imprimir_resumen_entrega(submission: dict[str, Any]) -> None:
     """
     Imprime información útil para la revisión en terminal.
@@ -734,6 +758,8 @@ def escribir_csv_resumen(csv_path: str, filas: list[dict[str, str]]) -> None:
             fieldnames=[
                 "curso",
                 "actividad",
+                "due_date",
+                "due_time",
                 "correo",
                 "nombre",
                 "apellido",
@@ -855,19 +881,10 @@ def procesar_actividad(
 
         perfil = perfiles_cache[user_id]
 
-        nombre = limpiar_nombre_archivo(perfil.get("nombre", "")) or "sin_nombre"
-        apellido = limpiar_nombre_archivo(perfil.get("apellido", "")) or "sin_apellido"
-
-        carpeta_entrega = os.path.join(
-            carpeta_actividad,
-            f"{apellido}_{nombre}_{user_id}",
-        )
-        asegurar_directorio(carpeta_entrega)
-
         archivos_descargados = descargar_adjuntos_entrega(
             submission=submission,
             drive_service=drive_service,
-            carpeta_entrega=carpeta_entrega,
+            carpeta_entrega=carpeta_actividad,
         )
 
         if archivos_descargados > 0:
@@ -877,10 +894,12 @@ def procesar_actividad(
             {
                 "curso": course_name,
                 "actividad": coursework_title,
+                "due_date": obtener_due_date_texto(coursework),
+                "due_time": obtener_due_time_texto(coursework),
                 "correo": perfil.get("correo", ""),
                 "nombre": perfil.get("nombre", ""),
                 "apellido": perfil.get("apellido", ""),
-                "attached": str(tiene_adjuntos(submission)),
+                "attached": str(tiene_adjuntos(submission)).lower(),
             }
         )
 

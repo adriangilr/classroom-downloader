@@ -10,6 +10,9 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 SCOPES = [
     "https://www.googleapis.com/auth/classroom.courses.readonly",
     "https://www.googleapis.com/auth/classroom.student-submissions.students.readonly",
+    "https://www.googleapis.com/auth/classroom.rosters.readonly",
+    "https://www.googleapis.com/auth/classroom.profile.emails",
+    "https://www.googleapis.com/auth/classroom.profile.photos",
     "https://www.googleapis.com/auth/drive.readonly",
 ]
 
@@ -28,13 +31,14 @@ def get_credentials(credentials_path: Path, token_path: Path) -> Credentials:
 
     if creds and creds.expired and creds.refresh_token:
         creds.refresh(Request())
+        token_path.write_text(creds.to_json(), encoding="utf-8")
+
     elif not creds or not creds.valid:
         flow = InstalledAppFlow.from_client_secrets_file(
             str(credentials_path),
             SCOPES,
         )
         creds = flow.run_local_server(port=0)
-
         token_path.write_text(creds.to_json(), encoding="utf-8")
 
     return creds

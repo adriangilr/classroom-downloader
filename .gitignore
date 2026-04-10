@@ -9,3 +9,4 @@ data/logs/*
 !.gitkeep
 .DS_Store
 venv/
+downloads/

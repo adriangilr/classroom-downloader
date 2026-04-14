@@ -8,6 +8,7 @@ import copy
 import re
 import shutil
 import zipfile
+import unicodedata
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -91,6 +92,223 @@ MIME_TO_EXT = {
     "image/gif": ".gif",
     "image/tiff": ".tiff",
 }
+
+
+# ==========================================================
+# CSV schema e idiomas configurables
+# ==========================================================
+
+CSV_OUTPUT_COLUMNS = [
+    "course_name",
+    "activity_name",
+    "student_name",
+    "student_mail",
+    "submission_status",
+    "has_attachment",
+    "submission_type",
+    "primary_file_type",
+    "days_late",
+    "is_readable",
+    "word_count",
+    "keyword_hits",
+    "requires_manual_review",
+    "confidence_score",
+    "auto_score",
+    "auto_feedback",
+    "auto_grading_reason",
+    "ai_feedback",
+    "final_grade",
+    "final_feedback",
+]
+
+TEXT_LABELS = {
+    "submission_status": {
+        "TURNED_IN": "turned_in",
+        "CREATED": "assigned_not_submitted",
+        "RETURNED": "returned",
+        "RECLAIMED_BY_STUDENT": "reclaimed_by_student",
+        "UNKNOWN": "unknown",
+    },
+    "submission_type": {
+        "none": "none",
+        "text_only": "text_only",
+        "image_only": "image_only",
+        "file_only": "file_only",
+        "mixed": "mixed",
+        "link_only": "link_only",
+    },
+}
+
+
+def normalizar_ascii_basico(texto: str) -> str:
+    """
+    Deja texto simple, sin acentos ni caracteres especiales problematicos.
+    """
+    texto = unicodedata.normalize("NFKD", texto or "")
+    texto = texto.encode("ascii", "ignore").decode("ascii")
+    texto = re.sub(r"\s+", " ", texto).strip()
+    return texto
+
+
+def bool_a_texto(valor: bool) -> str:
+    return "true" if valor else "false"
+
+
+def obtener_submission_status(submission: dict[str, Any]) -> str:
+    state = (submission.get("state") or "").upper()
+    return TEXT_LABELS["submission_status"].get(
+        state,
+        TEXT_LABELS["submission_status"]["UNKNOWN"],
+    )
+
+
+def detectar_submission_type(
+    submission: dict[str, Any],
+    rutas_descargadas: list[str],
+    readable_content: bool,
+) -> str:
+    """
+    Clasifica el tipo de entrega con una heuristica simple y mantenible.
+    """
+    attachments = obtener_adjuntos(submission)
+
+    if not attachments and readable_content:
+        return TEXT_LABELS["submission_type"]["text_only"]
+
+    if not attachments and not rutas_descargadas:
+        return TEXT_LABELS["submission_type"]["none"]
+
+    tiene_imagen = contiene_imagenes(rutas_descargadas)
+    tiene_archivo_no_imagen = any(
+        os.path.splitext(ruta)[1].lower() not in IMAGE_EXTENSIONS
+        for ruta in rutas_descargadas
+    )
+
+    tiene_links = any(
+        ("link" in att) or ("form" in att) or ("youTubeVideo" in att)
+        for att in attachments
+    )
+
+    if tiene_imagen and tiene_archivo_no_imagen:
+        return TEXT_LABELS["submission_type"]["mixed"]
+    if tiene_imagen and not tiene_archivo_no_imagen:
+        return TEXT_LABELS["submission_type"]["image_only"]
+    if tiene_archivo_no_imagen:
+        return TEXT_LABELS["submission_type"]["file_only"]
+    if tiene_links:
+        return TEXT_LABELS["submission_type"]["link_only"]
+    return TEXT_LABELS["submission_type"]["none"]
+
+
+def calcular_confidence_score(
+    entrego: bool,
+    has_attachment: bool,
+    readable_content: bool,
+    manual_review: bool,
+    word_count: int,
+    keyword_hits_count: int,
+    submission_type: str,
+) -> float:
+    """
+    Score heuristico 0..1 para indicar confianza del autograding.
+    """
+    if not entrego:
+        return 1.0
+
+    score = 0.35
+    if has_attachment:
+        score += 0.15
+    if readable_content:
+        score += 0.25
+    if word_count >= 50:
+        score += 0.15
+    elif word_count >= 10:
+        score += 0.08
+
+    if keyword_hits_count > 0:
+        score += min(0.10, keyword_hits_count * 0.05)
+
+    if submission_type == TEXT_LABELS["submission_type"]["mixed"]:
+        score -= 0.10
+    if submission_type == TEXT_LABELS["submission_type"]["image_only"]:
+        score -= 0.25
+    if manual_review:
+        score -= 0.30
+
+    return round(max(0.0, min(1.0, score)), 2)
+
+
+def construir_auto_feedback_es(
+    entrego: bool,
+    readable_content: bool,
+    manual_review: bool,
+    word_count: int,
+    days_late: int,
+    keyword_hits: list[str],
+    auto_score: int,
+) -> str:
+    if not entrego:
+        return "Sin entrega enviada. Calificacion automatica en 0."
+
+    partes: list[str] = []
+
+    if manual_review:
+        partes.append("Requiere revision manual por tipo de evidencia.")
+    elif readable_content:
+        partes.append(f"Contenido legible detectado con {word_count} palabras aprox.")
+    else:
+        partes.append("No se detecto contenido legible automaticamente.")
+
+    if keyword_hits:
+        partes.append(f"Coincidencias clave: {', '.join(keyword_hits)}.")
+
+    if days_late > 0:
+        partes.append(f"Entrega tardia de {days_late} dia(s).")
+
+    partes.append(f"Calificacion automatica sugerida: {auto_score}/100.")
+    return normalizar_ascii_basico(" ".join(partes))
+
+
+def construir_auto_grading_reason_es(
+    entrego: bool,
+    has_attachment: bool,
+    readable_content: bool,
+    sufficiency_score: int,
+    keyword_hits: list[str],
+    penalty_late: int,
+    manual_review: bool,
+) -> str:
+    if not entrego:
+        return "No entrego. Score final 0."
+
+    razones: list[str] = []
+
+    if has_attachment:
+        razones.append("Entrega valida con evidencia detectada")
+    else:
+        razones.append("Sin evidencia adjunta")
+
+    if readable_content:
+        razones.append("contenido legible")
+    else:
+        razones.append("sin contenido legible")
+
+    if sufficiency_score > 0:
+        razones.append(f"suficiencia {sufficiency_score} pts")
+    else:
+        razones.append("suficiencia 0 pts")
+
+    if keyword_hits:
+        razones.append(f"keywords detectadas: {', '.join(keyword_hits)}")
+
+    if penalty_late > 0:
+        razones.append(f"penalizacion por tardanza {penalty_late} pts")
+
+    if manual_review:
+        razones.append("marcada para revision manual")
+
+    return normalizar_ascii_basico("; ".join(razones) + ".")
+
 
 
 # ==========================================================
@@ -644,17 +862,9 @@ def es_tardia(submission: dict[str, Any]) -> bool:
 
 def estado_legible_entrega(submission: dict[str, Any]) -> str:
     """
-    Traduce el estado técnico de Classroom a algo más entendible.
+    Traduce el estado tecnico de Classroom a un valor configurable.
     """
-    state = (submission.get("state") or "").upper()
-
-    mapa = {
-        "TURNED_IN": "entregado",
-        "CREATED": "asignado_sin_entregar",
-        "RETURNED": "devuelto",
-        "RECLAIMED_BY_STUDENT": "reclamado_por_alumno",
-    }
-    return mapa.get(state, state.lower() or "desconocido")
+    return obtener_submission_status(submission)
 
 
 def se_puede_descargar_entrega(submission: dict[str, Any]) -> bool:
@@ -1008,6 +1218,22 @@ def contiene_imagenes(rutas: list[str]) -> bool:
     Indica si entre los adjuntos descargados hay al menos una imagen.
     """
     return any(es_archivo_imagen(ruta) for ruta in rutas)
+
+
+def obtener_primary_file_type(rutas: list[str]) -> str:
+    """
+    Regresa la extensión principal detectada en los archivos descargados.
+    Si no hay archivos, regresa vacío.
+    """
+    if not rutas:
+        return ""
+
+    for ruta in rutas:
+        ext = os.path.splitext(ruta)[1].lower().lstrip(".")
+        if ext:
+            return ext
+
+    return ""
 
 
 def leer_texto_pptx(path: str) -> str:
@@ -1365,19 +1591,53 @@ def evaluar_entrega_automatica(
         )
         auto_grade = max(0, min(100, auto_grade))
 
-    feedback = construir_feedback_corto(
-        late=late,
+    keyword_hits_list = list(analisis["keyword_hits"])
+    submission_type = detectar_submission_type(
+        submission=submission,
+        rutas_descargadas=rutas_descargadas,
+        readable_content=bool(analisis["contenido_legible"]),
+    )
+    primary_file_type = obtener_primary_file_type(rutas_descargadas)
+    confidence_score = calcular_confidence_score(
+        entrego=entrego,
+        has_attachment=has_attachment,
+        readable_content=bool(analisis["contenido_legible"]),
         manual_review=manual_review,
-        contenido_legible=bool(analisis["contenido_legible"]),
-        sufficiency_level=str(analisis["sufficiency_level"]),
+        word_count=int(analisis["num_palabras"]),
+        keyword_hits_count=len(keyword_hits_list),
+        submission_type=submission_type,
+    )
+    auto_feedback = construir_auto_feedback_es(
+        entrego=entrego,
+        readable_content=bool(analisis["contenido_legible"]),
+        manual_review=manual_review,
+        word_count=int(analisis["num_palabras"]),
+        days_late=days_late,
+        keyword_hits=keyword_hits_list,
+        auto_score=auto_grade,
+    )
+    auto_grading_reason = construir_auto_grading_reason_es(
+        entrego=entrego,
+        has_attachment=has_attachment,
+        readable_content=bool(analisis["contenido_legible"]),
+        sufficiency_score=sufficiency_score,
+        keyword_hits=keyword_hits_list,
+        penalty_late=penalty_late,
+        manual_review=manual_review,
     )
 
     return {
         "auto_grade": auto_grade,
-        "feedback": feedback,
+        "auto_score": auto_grade,
+        "feedback": auto_feedback,
+        "auto_feedback": auto_feedback,
+        "auto_grading_reason": auto_grading_reason,
+        "confidence_score": confidence_score,
+        "submission_type": submission_type,
+        "primary_file_type": primary_file_type,
         "penalty_late": penalty_late,
         "days_late": days_late,
-        "has_attachment": str(has_attachment).lower(),
+        "has_attachment": bool_a_texto(has_attachment),
         "delivery_valid_score": delivery_valid_score,
         "evidence_score": evidence_score,
         "readable_content_score": readable_content_score,
@@ -1386,9 +1646,12 @@ def evaluar_entrega_automatica(
         "files_read_for_content": archivos_leidos,
         "detected_words": int(analisis["num_palabras"]),
         "detected_characters": int(analisis["num_caracteres"]),
-        "keyword_hits": ", ".join(analisis["keyword_hits"]),
-        "manual_review": str(manual_review).lower(),
-        "readable_content": str(bool(analisis["contenido_legible"])).lower(),
+        "keyword_hits": ", ".join(keyword_hits_list),
+        "keyword_hits_list": keyword_hits_list,
+        "manual_review": bool_a_texto(manual_review),
+        "requires_manual_review": bool_a_texto(manual_review),
+        "readable_content": bool_a_texto(bool(analisis["contenido_legible"])),
+        "is_readable": bool_a_texto(bool(analisis["contenido_legible"])),
     }
 
 
@@ -1480,44 +1743,20 @@ def descargar_adjuntos_entrega(
 
 def escribir_csv_resumen(csv_path: str, filas: list[dict[str, str]]) -> None:
     """
-    Genera CSV general con información de curso, actividad, alumno
-    y evaluación automática.
+    Genera CSV general con el schema de salida final.
     """
     asegurar_directorio(os.path.dirname(csv_path))
 
     with open(csv_path, "w", newline="", encoding="utf-8") as csvfile:
         writer = csv.DictWriter(
             csvfile,
-            fieldnames=[
-                "curso",
-                "actividad",
-                "due_date",
-                "due_time",
-                "correo",
-                "nombre",
-                "apellido",
-                "estado_entrega",
-                "late",
-                "assigned_grade",
-                "draft_grade",
-                "attached",
-                "has_attachment",
-                "manual_review",
-                "readable_content",
-                "days_late",
-                "penalty_late",
-                "delivery_valid_score",
-                "evidence_score",
-                "readable_content_score",
-                "minimum_sufficiency_score",
-                "keyword_hits",
-                "content_score",
-                "auto_grade",
-                "feedback",
-            ],
+            fieldnames=CSV_OUTPUT_COLUMNS,
+            extrasaction="ignore",
         )
         writer.writeheader()
-        writer.writerows(filas)
+        for fila in filas:
+            row = {col: fila.get(col, "") for col in CSV_OUTPUT_COLUMNS}
+            writer.writerow(row)
 
     print(f"\n✅ CSV generado: {csv_path}")
 
@@ -1668,17 +1907,26 @@ def procesar_actividad(
             print("  adjuntos: no aplica, alumno sin entrega enviada")
             evaluacion = {
                 "auto_grade": 0,
-                "feedback": "Alumno asignado pero sin entrega enviada. No se descargaron archivos ni se evaluó contenido.",
+                "auto_score": 0,
+                "feedback": "Sin entrega enviada. Calificacion automatica en 0.",
+                "auto_feedback": "Sin entrega enviada. Calificacion automatica en 0.",
+                "auto_grading_reason": "No entrego. Score final 0.",
+                "confidence_score": 1.0,
+                "submission_type": TEXT_LABELS["submission_type"]["none"],
+                "primary_file_type": "",
                 "penalty_late": 0,
                 "days_late": 0,
                 "has_attachment": "false",
                 "manual_review": "false",
+                "requires_manual_review": "false",
                 "readable_content": "false",
+                "is_readable": "false",
                 "delivery_valid_score": 0,
                 "evidence_score": 0,
                 "readable_content_score": 0,
                 "minimum_sufficiency_score": 0,
                 "keyword_hits": "",
+                "keyword_hits_list": [],
                 "content_score": 0,
                 "files_read_for_content": 0,
                 "detected_words": 0,
@@ -1692,31 +1940,29 @@ def procesar_actividad(
 
         filas_csv.append(
             {
-                "curso": course_name,
-                "actividad": coursework_title,
-                "due_date": obtener_due_date_texto(coursework),
-                "due_time": obtener_due_time_texto(coursework),
-                "correo": perfil.get("correo", ""),
-                "nombre": perfil.get("nombre", ""),
-                "apellido": perfil.get("apellido", ""),
-                "estado_entrega": estado_legible_entrega(submission),
-                "late": str(bool(submission.get("late", False))).lower(),
-                "assigned_grade": "" if submission.get("assignedGrade") is None else str(submission.get("assignedGrade")),
-                "draft_grade": "" if submission.get("draftGrade") is None else str(submission.get("draftGrade")),
-                "attached": str(tiene_adjuntos(submission)).lower(),
+                "course_name": course_name,
+                "activity_name": coursework_title,
+                "student_name": " ".join(
+                    p for p in [perfil.get("apellido", ""), perfil.get("nombre", "")]
+                    if p
+                ).strip(),
+                "student_mail": perfil.get("correo", ""),
+                "submission_status": estado_legible_entrega(submission),
                 "has_attachment": str(evaluacion["has_attachment"]).lower(),
-                "manual_review": str(evaluacion["manual_review"]).lower(),
-                "readable_content": str(evaluacion["readable_content"]).lower(),
+                "submission_type": evaluacion["submission_type"],
+                "primary_file_type": evaluacion.get("primary_file_type", ""),
                 "days_late": str(evaluacion["days_late"]),
-                "penalty_late": str(evaluacion["penalty_late"]),
-                "delivery_valid_score": str(evaluacion["delivery_valid_score"]),
-                "evidence_score": str(evaluacion["evidence_score"]),
-                "readable_content_score": str(evaluacion["readable_content_score"]),
-                "minimum_sufficiency_score": str(evaluacion["minimum_sufficiency_score"]),
+                "is_readable": str(evaluacion["is_readable"]).lower(),
+                "word_count": str(evaluacion["detected_words"]),
                 "keyword_hits": evaluacion["keyword_hits"],
-                "content_score": str(evaluacion["content_score"]),
-                "auto_grade": str(evaluacion["auto_grade"]),
-                "feedback": evaluacion["feedback"],
+                "requires_manual_review": str(evaluacion["requires_manual_review"]).lower(),
+                "confidence_score": f"{float(evaluacion['confidence_score']):.2f}",
+                "auto_score": str(evaluacion["auto_score"]),
+                "auto_feedback": normalizar_ascii_basico(evaluacion["auto_feedback"]),
+                "auto_grading_reason": normalizar_ascii_basico(evaluacion["auto_grading_reason"]),
+                "ai_feedback": "",
+                "final_grade": "",
+                "final_feedback": "",
             }
         )
 

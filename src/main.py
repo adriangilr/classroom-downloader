@@ -689,6 +689,42 @@ def describir_modo_descarga(modo_descarga: str) -> str:
     return descripciones.get(modo_descarga, "filtro desconocido")
 
 
+def confirmar_descarga_resumen(
+    course_display: str,
+    alcance_descarga: str,
+    filtro_actividades: str,
+    modo_descarga: str,
+    formato_salida: str,
+    total_actividades: int,
+    actividad_seleccionada: dict[str, Any] | None = None,
+) -> bool:
+    """
+    Pide confirmación final antes de iniciar la descarga real.
+    """
+    print("\n" + "=" * 90)
+    print("CONFIRMACION FINAL")
+    print("=" * 90)
+    print(f"Curso: {course_display}")
+    print(f"Alcance: {alcance_descarga}")
+    print(f"Filtro de actividades: {filtro_actividades}")
+    print(f"Modo de descarga: {describir_modo_descarga(modo_descarga)}")
+    print(f"Formato de salida: {formato_salida}")
+
+    if actividad_seleccionada is not None:
+        print(f"Actividad: {actividad_seleccionada.get('display_name', actividad_seleccionada.get('title', 'sin_titulo'))}")
+    else:
+        print(f"Actividades a procesar: {total_actividades}")
+
+    while True:
+        entrada = input("\n¿Confirmar descarga? (s/n): ").strip().lower()
+        if entrada in {"s", "si", "sí"}:
+            return True
+        if entrada in {"n", "no"}:
+            print("⏹️ Descarga cancelada por el usuario.")
+            return False
+        print("❌ Respuesta inválida. Escribe 's' o 'n'.")
+
+
 # ==========================================================
 # Descarga de Drive
 # ==========================================================
@@ -2147,6 +2183,18 @@ def main() -> None:
 
                                 print(f"\n✅ Actividad seleccionada: {selected_coursework['display_name']}")
 
+                                confirmado = confirmar_descarga_resumen(
+                                    course_display=course_display,
+                                    alcance_descarga=alcance_descarga,
+                                    filtro_actividades=filtro_actividades,
+                                    modo_descarga=modo_descarga,
+                                    formato_salida=formato_salida,
+                                    total_actividades=1,
+                                    actividad_seleccionada=selected_coursework,
+                                )
+                                if not confirmado:
+                                    continue
+
                                 carpeta_base = preparar_directorio_salida(
                                     carpeta_curso,
                                     limpiar_si_existe=True,
@@ -2169,6 +2217,18 @@ def main() -> None:
                                 nombre_zip = course_slug
 
                             elif alcance_descarga == "all_courseworks":
+                                confirmado = confirmar_descarga_resumen(
+                                    course_display=course_display,
+                                    alcance_descarga=alcance_descarga,
+                                    filtro_actividades=filtro_actividades,
+                                    modo_descarga=modo_descarga,
+                                    formato_salida=formato_salida,
+                                    total_actividades=len(courseworks_filtradas),
+                                    actividad_seleccionada=None,
+                                )
+                                if not confirmado:
+                                    continue
+
                                 carpeta_base = preparar_directorio_salida(
                                     carpeta_curso,
                                     limpiar_si_existe=True,
@@ -2221,7 +2281,7 @@ def main() -> None:
                             print("Nota: en modo 'all' ahora el CSV incluye también alumnos sin entregar.")
                             print(f"Carpeta base: {carpeta_base}")
                             if formato_salida == "zip_and_folder":
-                                print(f"ZIP: downloads/{nombre_zip}.zip")
+                                print(f"ZIP: {os.path.join(settings.download_root, nombre_zip)}.zip")
 
                             print("\n✅ Proceso terminado.")
                             return

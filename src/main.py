@@ -450,22 +450,35 @@ def construir_nombre_carpeta_entrega(
     )
 
 
-def seleccionar_opcion(lista: list[dict[str, Any]], tipo: str) -> dict[str, Any]:
+def seleccionar_opcion(
+    lista: list[dict[str, Any]],
+    tipo: str,
+    permitir_regresar: bool = False,
+) -> dict[str, Any] | None:
     """
     Menú interactivo genérico para terminal.
+    Si permitir_regresar=True, muestra una opción extra para volver.
     """
-    print(f"\nSelecciona {tipo}:\n")
-
-    for i, item in enumerate(lista, start=1):
-        print(f"{i}. {item['display_name']}")
-
     while True:
+        print(f"\nSelecciona {tipo}:\n")
+
+        for i, item in enumerate(lista, start=1):
+            print(f"{i}. {item['display_name']}")
+
+        opcion_regresar = len(lista) + 1
+        if permitir_regresar:
+            print(f"{opcion_regresar}. Regresar")
+
         entrada = input("\nIngresa número: ").strip()
 
         try:
             indice = int(entrada) - 1
+
             if 0 <= indice < len(lista):
                 return lista[indice]
+
+            if permitir_regresar and indice == len(lista):
+                return None
         except ValueError:
             pass
 
@@ -589,7 +602,7 @@ def obtener_nombre_actividad_visible(coursework: dict[str, Any]) -> str:
 # Menús
 # ==========================================================
 
-def seleccionar_alcance_descarga() -> str:
+def seleccionar_alcance_descarga(permitir_regresar: bool = False) -> str | None:
     """
     Permite elegir si se descargará una actividad
     o todas las actividades del curso.
@@ -604,10 +617,15 @@ def seleccionar_alcance_descarga() -> str:
             "display_name": "Descargar todas las actividades del curso",
         },
     ]
-    return seleccionar_opcion(opciones, "el alcance de la descarga")["id"]
+    seleccion = seleccionar_opcion(
+        opciones,
+        "el alcance de la descarga",
+        permitir_regresar=permitir_regresar,
+    )
+    return seleccion["id"] if seleccion else None
 
 
-def seleccionar_modo_descarga() -> str:
+def seleccionar_modo_descarga(permitir_regresar: bool = False) -> str | None:
     """
     Define qué entregas se descargarán.
     """
@@ -618,10 +636,15 @@ def seleccionar_modo_descarga() -> str:
             "display_name": "Bajar solo tardías y no evaluadas",
         },
     ]
-    return seleccionar_opcion(opciones, "un modo de descarga")["id"]
+    seleccion = seleccionar_opcion(
+        opciones,
+        "un modo de descarga",
+        permitir_regresar=permitir_regresar,
+    )
+    return seleccion["id"] if seleccion else None
 
 
-def seleccionar_formato_salida() -> str:
+def seleccionar_formato_salida(permitir_regresar: bool = False) -> str | None:
     """
     Define si solo se guarda en carpeta o también en zip.
     """
@@ -629,10 +652,15 @@ def seleccionar_formato_salida() -> str:
         {"id": "folder_only", "display_name": "Guardar solo en carpeta"},
         {"id": "zip_and_folder", "display_name": "Guardar en carpeta y generar .zip"},
     ]
-    return seleccionar_opcion(opciones, "un formato de salida")["id"]
+    seleccion = seleccionar_opcion(
+        opciones,
+        "un formato de salida",
+        permitir_regresar=permitir_regresar,
+    )
+    return seleccion["id"] if seleccion else None
 
 
-def seleccionar_filtro_actividades() -> str:
+def seleccionar_filtro_actividades(permitir_regresar: bool = False) -> str | None:
     """
     Permite aplicar un filtro a las actividades del curso
     antes de elegir una o antes de procesarlas todas.
@@ -641,7 +669,12 @@ def seleccionar_filtro_actividades() -> str:
         {"id": "all", "display_name": "Todas las actividades"},
         {"id": "with_submissions", "display_name": "Solo actividades con entregas"},
     ]
-    return seleccionar_opcion(opciones, "un filtro de actividades")["id"]
+    seleccion = seleccionar_opcion(
+        opciones,
+        "un filtro de actividades",
+        permitir_regresar=permitir_regresar,
+    )
+    return seleccion["id"] if seleccion else None
 
 
 def describir_modo_descarga(modo_descarga: str) -> str:
@@ -1975,6 +2008,7 @@ def procesar_actividad(
 
 AUTOGRADING_CONFIG = cargar_config_autograding()
 
+
 def main() -> None:
     """
     Flujo principal:
@@ -1986,6 +2020,7 @@ def main() -> None:
     6. elige formato de salida
     7. descarga
     8. genera CSV y zip
+
     """
     settings = get_settings()
     ensure_directories(settings)
@@ -2017,156 +2052,179 @@ def main() -> None:
             print("No se encontraron cursos.")
             return
 
-        selected_course = seleccionar_opcion(courses, "un curso")
-        course_id = selected_course["id"]
-        course_name = limpiar_nombre_archivo(selected_course.get("name", f"curso_{course_id}"))
-        course_slug = construir_slug_curso(
-            selected_course.get("name", f"curso_{course_id}"),
-            course_id,
-        )
-        course_display = selected_course.get("display_name", selected_course.get("name", "Curso"))
+        while True:
+            selected_course = seleccionar_opcion(
+                courses,
+                "un curso",
+                permitir_regresar=False,
+            )
+            if selected_course is None:
+                continue
 
-        print(f"\n✅ Curso seleccionado: {course_display}")
-
-        alcance_descarga = seleccionar_alcance_descarga()
-        print(f"\n📚 Alcance seleccionado: {alcance_descarga}")
-
-        filtro_actividades = seleccionar_filtro_actividades()
-        print(f"\n Filtro de actividades: {filtro_actividades}")
-
-        modo_descarga = seleccionar_modo_descarga()
-        print(f"\n📥 Modo seleccionado: {describir_modo_descarga(modo_descarga)}")
-
-        formato_salida = seleccionar_formato_salida()
-        print(f"📦 Formato de salida: {formato_salida}")
-
-        courseworks = obtener_todas_las_actividades(classroom_service, course_id)
-
-        if not courseworks:
-            print("No se encontraron actividades en este curso.")
-            return
-
-        courseworks_filtradas = filtrar_actividades(
-            classroom_service=classroom_service,
-            course_id=course_id,
-            courseworks=courseworks,
-            filtro=filtro_actividades,
-        )
-
-        if not courseworks_filtradas:
-            print("No quedaron actividades después de aplicar el filtro.")
-            return
-
-        print(
-            f"✅ Actividades encontradas: {len(courseworks)} | "
-            f"después del filtro: {len(courseworks_filtradas)}"
-        )
-
-        carpeta_curso = os.path.normpath(
-            os.path.join(settings.download_root, course_slug)
-        )
-
-        perfiles_cache: dict[str, dict[str, str]] = {}
-        filas_csv: list[dict[str, str]] = []
-        estadisticas = {
-            "actividades_procesadas": 0,
-            "entregas_totales": 0,
-            "entregas_filtradas": 0,
-            "archivos_descargados": 0,
-        }
-
-        if alcance_descarga == "single_coursework":
-            selected_coursework = seleccionar_opcion(courseworks_filtradas, "una actividad")
-            print(f"\n✅ Actividad seleccionada: {selected_coursework['display_name']}")
-
-            coursework_title = selected_coursework.get("title", f"actividad_{selected_coursework['id']}")
-            coursework_folder_name = construir_slug_actividad(
-                coursework_title,
-                selected_coursework["id"],
+            course_id = selected_course["id"]
+            course_slug = construir_slug_curso(
+                selected_course.get("name", f"curso_{course_id}"),
+                course_id,
+            )
+            course_display = selected_course.get(
+                "display_name",
+                selected_course.get("name", "Curso"),
             )
 
-            # Para una sola actividad también se reconstruye la carpeta del curso completa,
-            # de modo que el ZIP conserve la estructura:
-            # Curso_ID/Actividad_ID/alumno/
-            carpeta_base = preparar_directorio_salida(
-                carpeta_curso,
-                limpiar_si_existe=True,
-            )
+            print(f"\n✅ Curso seleccionado: {course_display}")
 
-            procesar_actividad(
-                classroom_service=classroom_service,
-                drive_service=drive_service,
-                course=selected_course,
-                coursework=selected_coursework,
-                modo_descarga=modo_descarga,
-                carpeta_base=carpeta_base,
-                perfiles_cache=perfiles_cache,
-                filas_csv=filas_csv,
-                estadisticas=estadisticas,
-                profile_scope_disponible=profile_scope_disponible,
-            )
+            while True:
+                alcance_descarga = seleccionar_alcance_descarga(permitir_regresar=True)
+                if alcance_descarga is None:
+                    break
 
-            nombre_csv = "resumen_entregas.csv"
-            nombre_zip = course_slug
+                print(f"\n📚 Alcance seleccionado: {alcance_descarga}")
 
-        elif alcance_descarga == "all_courseworks":
-            # Para exportación completa sí se usa la carpeta del curso,
-            # pero se limpia antes para que no arrastre histórico.
-            carpeta_base = preparar_directorio_salida(
-                carpeta_curso,
-                limpiar_si_existe=True,
-            )
+                while True:
+                    filtro_actividades = seleccionar_filtro_actividades(permitir_regresar=True)
+                    if filtro_actividades is None:
+                        break
 
-            print(
-                f"\n✅ Se procesarán todas las actividades filtradas del curso: "
-                f"{len(courseworks_filtradas)}"
-            )
+                    print(f"\n🧩 Filtro de actividades: {filtro_actividades}")
 
-            for idx, coursework in enumerate(courseworks_filtradas, start=1):
-                print(f"\n[{idx}/{len(courseworks_filtradas)}] {coursework['display_name']}")
+                    while True:
+                        modo_descarga = seleccionar_modo_descarga(permitir_regresar=True)
+                        if modo_descarga is None:
+                            break
 
-                procesar_actividad(
-                    classroom_service=classroom_service,
-                    drive_service=drive_service,
-                    course=selected_course,
-                    coursework=coursework,
-                    modo_descarga=modo_descarga,
-                    carpeta_base=carpeta_base,
-                    perfiles_cache=perfiles_cache,
-                    filas_csv=filas_csv,
-                    estadisticas=estadisticas,
-                    profile_scope_disponible=profile_scope_disponible,
-                )
+                        print(f"\n📥 Modo seleccionado: {describir_modo_descarga(modo_descarga)}")
 
-            nombre_csv = "resumen_todas_las_actividades.csv"
-            nombre_zip = course_slug
+                        while True:
+                            formato_salida = seleccionar_formato_salida(permitir_regresar=True)
+                            if formato_salida is None:
+                                break
 
-        else:
-            print("❌ Alcance de descarga no reconocido.")
-            return
+                            print(f"📦 Formato de salida: {formato_salida}")
 
-        csv_path = os.path.join(carpeta_base, nombre_csv)
-        escribir_csv_resumen(csv_path, filas_csv)
+                            courseworks = obtener_todas_las_actividades(classroom_service, course_id)
 
-        if formato_salida == "zip_and_folder":
-            zip_base_name = os.path.join("downloads", nombre_zip)
-            comprimir_carpeta_a_zip(carpeta_base, zip_base_name)
+                            if not courseworks:
+                                print("No se encontraron actividades en este curso.")
+                                break
 
-        print("\n" + "=" * 90)
-        print("RESUMEN FINAL")
-        print("=" * 90)
-        print(f"Curso: {course_display}")
-        print(f"Actividades procesadas: {estadisticas['actividades_procesadas']}")
-        print(f"Entregas totales vistas: {estadisticas['entregas_totales']}")
-        print(f"Entregas que cumplieron filtro: {estadisticas['entregas_filtradas']}")
-        print(f"Archivos descargados: {estadisticas['archivos_descargados']}")
-        print(f"Filas en CSV: {len(filas_csv)}")
-        print("Nota: en modo 'all' ahora el CSV incluye también alumnos sin entregar.")
-        print(f"Carpeta base: {carpeta_base}")
-        if formato_salida == "zip_and_folder":
-            print(f"ZIP: downloads/{nombre_zip}.zip")
+                            courseworks_filtradas = filtrar_actividades(
+                                classroom_service=classroom_service,
+                                course_id=course_id,
+                                courseworks=courseworks,
+                                filtro=filtro_actividades,
+                            )
 
-        print("\n✅ Proceso terminado.")
+                            if not courseworks_filtradas:
+                                print("No quedaron actividades después de aplicar el filtro.")
+                                break
+
+                            print(
+                                f"✅ Actividades encontradas: {len(courseworks)} | "
+                                f"después del filtro: {len(courseworks_filtradas)}"
+                            )
+
+                            perfiles_cache: dict[str, dict[str, str]] = {}
+                            filas_csv: list[dict[str, str]] = []
+                            estadisticas = {
+                                "actividades_procesadas": 0,
+                                "entregas_totales": 0,
+                                "entregas_filtradas": 0,
+                                "archivos_descargados": 0,
+                            }
+
+                            carpeta_curso = os.path.normpath(
+                                os.path.join(settings.download_root, course_slug)
+                            )
+
+                            if alcance_descarga == "single_coursework":
+                                selected_coursework = seleccionar_opcion(
+                                    courseworks_filtradas,
+                                    "una actividad",
+                                    permitir_regresar=True,
+                                )
+                                if selected_coursework is None:
+                                    continue
+
+                                print(f"\n✅ Actividad seleccionada: {selected_coursework['display_name']}")
+
+                                carpeta_base = preparar_directorio_salida(
+                                    carpeta_curso,
+                                    limpiar_si_existe=True,
+                                )
+
+                                procesar_actividad(
+                                    classroom_service=classroom_service,
+                                    drive_service=drive_service,
+                                    course=selected_course,
+                                    coursework=selected_coursework,
+                                    modo_descarga=modo_descarga,
+                                    carpeta_base=carpeta_base,
+                                    perfiles_cache=perfiles_cache,
+                                    filas_csv=filas_csv,
+                                    estadisticas=estadisticas,
+                                    profile_scope_disponible=profile_scope_disponible,
+                                )
+
+                                nombre_csv = "resumen_entregas.csv"
+                                nombre_zip = course_slug
+
+                            elif alcance_descarga == "all_courseworks":
+                                carpeta_base = preparar_directorio_salida(
+                                    carpeta_curso,
+                                    limpiar_si_existe=True,
+                                )
+
+                                print(
+                                    f"\n✅ Se procesarán todas las actividades filtradas del curso: "
+                                    f"{len(courseworks_filtradas)}"
+                                )
+
+                                for idx, coursework in enumerate(courseworks_filtradas, start=1):
+                                    print(f"\n[{idx}/{len(courseworks_filtradas)}] {coursework['display_name']}")
+
+                                    procesar_actividad(
+                                        classroom_service=classroom_service,
+                                        drive_service=drive_service,
+                                        course=selected_course,
+                                        coursework=coursework,
+                                        modo_descarga=modo_descarga,
+                                        carpeta_base=carpeta_base,
+                                        perfiles_cache=perfiles_cache,
+                                        filas_csv=filas_csv,
+                                        estadisticas=estadisticas,
+                                        profile_scope_disponible=profile_scope_disponible,
+                                    )
+
+                                nombre_csv = "resumen_todas_las_actividades.csv"
+                                nombre_zip = course_slug
+
+                            else:
+                                print("❌ Alcance de descarga no reconocido.")
+                                continue
+
+                            csv_path = os.path.join(carpeta_base, nombre_csv)
+                            escribir_csv_resumen(csv_path, filas_csv)
+
+                            if formato_salida == "zip_and_folder":
+                                zip_base_name = os.path.join(settings.download_root, nombre_zip)
+                                comprimir_carpeta_a_zip(carpeta_base, zip_base_name)
+
+                            print("\n" + "=" * 90)
+                            print("RESUMEN FINAL")
+                            print("=" * 90)
+                            print(f"Curso: {course_display}")
+                            print(f"Actividades procesadas: {estadisticas['actividades_procesadas']}")
+                            print(f"Entregas totales vistas: {estadisticas['entregas_totales']}")
+                            print(f"Entregas que cumplieron filtro: {estadisticas['entregas_filtradas']}")
+                            print(f"Archivos descargados: {estadisticas['archivos_descargados']}")
+                            print(f"Filas en CSV: {len(filas_csv)}")
+                            print("Nota: en modo 'all' ahora el CSV incluye también alumnos sin entregar.")
+                            print(f"Carpeta base: {carpeta_base}")
+                            if formato_salida == "zip_and_folder":
+                                print(f"ZIP: downloads/{nombre_zip}.zip")
+
+                            print("\n✅ Proceso terminado.")
+                            return
 
     except HttpError as err:
         print(f"Error al consultar Classroom: {err}")

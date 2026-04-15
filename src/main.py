@@ -715,14 +715,30 @@ def confirmar_descarga_resumen(
     else:
         print(f"Actividades a procesar: {total_actividades}")
 
+    
+        
+        
+        
     while True:
-        entrada = input("\n¿Confirmar descarga? (s/n): ").strip().lower()
+        entrada = input("\n¿Confirmar descarga? (s/n) [s]: ").strip().lower()
+
+        if entrada == "":
+            return True
         if entrada in {"s", "si", "sí"}:
             return True
         if entrada in {"n", "no"}:
             print("⏹️ Descarga cancelada por el usuario.")
             return False
+
         print("❌ Respuesta inválida. Escribe 's' o 'n'.")
+
+
+def obtener_directorio_exportacion(settings) -> str:
+    """
+    Directorio único para salidas finales del proceso.
+    Fuerza el uso de downloads/ para carpeta y zip, sin depender de download_root.
+    """
+    return os.path.normpath("downloads")
 
 
 # ==========================================================
@@ -2168,8 +2184,9 @@ def main() -> None:
                                 "archivos_descargados": 0,
                             }
 
+                            directorio_exportacion = obtener_directorio_exportacion(settings)
                             carpeta_curso = os.path.normpath(
-                                os.path.join(settings.download_root, course_slug)
+                                os.path.join(directorio_exportacion, course_slug)
                             )
 
                             if alcance_descarga == "single_coursework":
@@ -2266,7 +2283,7 @@ def main() -> None:
                             escribir_csv_resumen(csv_path, filas_csv)
 
                             if formato_salida == "zip_and_folder":
-                                zip_base_name = os.path.join(settings.download_root, nombre_zip)
+                                zip_base_name = os.path.join(directorio_exportacion, nombre_zip)
                                 comprimir_carpeta_a_zip(carpeta_base, zip_base_name)
 
                             print("\n" + "=" * 90)
@@ -2281,7 +2298,7 @@ def main() -> None:
                             print("Nota: en modo 'all' ahora el CSV incluye también alumnos sin entregar.")
                             print(f"Carpeta base: {carpeta_base}")
                             if formato_salida == "zip_and_folder":
-                                print(f"ZIP: {os.path.join(settings.download_root, nombre_zip)}.zip")
+                                print(f"ZIP: {os.path.join(directorio_exportacion, nombre_zip)}.zip")
 
                             print("\n✅ Proceso terminado.")
                             return

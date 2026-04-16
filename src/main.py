@@ -94,6 +94,385 @@ MIME_TO_EXT = {
 }
 
 
+
+
+LANG = "es"
+
+I18N = {
+    "es": {
+        "ui": {
+            "select": "Selecciona {tipo}:",
+            "enter_number": "Ingresa número:",
+            "go_back": "Regresar",
+            "invalid_option": "❌ Opción inválida. Intenta de nuevo.",
+            "final_confirmation": "CONFIRMACION FINAL",
+            "course": "Curso",
+            "scope": "Alcance",
+            "activity_filter": "Filtro de actividades",
+            "download_mode": "Modo de descarga",
+            "output_format": "Formato de salida",
+            "activity": "Actividad",
+            "activities_to_process": "Actividades a procesar",
+            "confirm_download": "¿Confirmar descarga? (s/n) [s]: ",
+            "download_cancelled": "⏹️ Descarga cancelada por el usuario.",
+            "invalid_yes_no": "❌ Respuesta inválida. Escribe 's' o 'n'.",
+        },
+        "menu": {
+            "download_scope": "el alcance de la descarga",
+            "download_mode": "un modo de descarga",
+            "output_format": "un formato de salida",
+            "activity_filter": "un filtro de actividades",
+            "course": "un curso",
+            "activity": "una actividad",
+        },
+        "options": {
+            "single_coursework": "Descargar una sola actividad",
+            "all_courseworks": "Descargar todas las actividades del curso",
+            "all": "Incluir todos los alumnos (entregados y no entregados)",
+            "late_ungraded": "Bajar solo tardías y no evaluadas",
+            "folder_only": "Guardar solo en carpeta",
+            "zip_and_folder": "Guardar en carpeta y generar .zip",
+            "with_submissions": "Solo actividades con entregas",
+            "all_activities": "Todas las actividades",
+        },
+        "descriptions": {
+            "all": "todas las entregas activas",
+            "resubmitted": "solo reentregadas y pendientes de reevaluación",
+            "ungraded": "solo no evaluadas",
+            "late": "solo tardías",
+            "resubmitted_ungraded": "solo reentregadas y no evaluadas",
+            "late_ungraded": "solo tardías y no evaluadas",
+            "unknown_filter": "filtro desconocido",
+        },
+        "runtime": {
+            "config_read_error": "⚠️ No se pudo leer la configuración de autograding en '{path}': {err}",
+            "downloaded": "      ✅ Descargado: {name}",
+            "download_error": "      ❌ Error al descargar '{name}': {err}",
+            "attachments_none": "  adjuntos: ninguno",
+            "attachments_header": "  adjuntos:",
+            "link": "    - Link: {title} | url={url}",
+            "form": "    - Form: {title} | url={url}",
+            "youtube": "    - YouTube: {title} | url={url}",
+            "unhandled_attachment": "    - Tipo de adjunto no manejado directamente.",
+            "csv_generated": "✅ CSV generado: {path}",
+            "zip_generated": "✅ ZIP generado: {path}",
+            "processing_activity": "Procesando actividad: {name}",
+            "no_submissions": "No se encontraron entregas para esta actividad.",
+            "submissions_total": "Entregas totales encontradas: {count}",
+            "submissions_filtered": "Entregas a procesar con este filtro: {count}",
+            "submissions_no_match": "No hay entregas que coincidan con el filtro para esta actividad.",
+            "user_profile_fallback": "  ⚠️ No se pudo leer userProfiles para userId={user_id}. Se usará fallback. Detalle: {err}",
+            "no_submission_download": "  adjuntos: no aplica, alumno sin entrega enviada",
+            "auth_ok": "Autenticación correcta.",
+            "token_valid": "Token válido: {value}",
+            "profile_scope_ok": "✅ Scope de perfiles disponible.",
+            "profile_scope_missing": "⚠️ El token no tiene scope para leer perfiles de alumnos. Se continuará con fallback y el CSV puede traer nombre/correo vacíos.",
+            "no_courses": "No se encontraron cursos.",
+            "selected_course": "✅ Curso seleccionado: {value}",
+            "selected_scope": "📚 Alcance seleccionado: {value}",
+            "selected_filter": "🧩 Filtro de actividades: {value}",
+            "selected_mode": "📥 Modo seleccionado: {value}",
+            "selected_output": "📦 Formato de salida: {value}",
+            "no_courseworks": "No se encontraron actividades en este curso.",
+            "no_courseworks_after_filter": "No quedaron actividades después de aplicar el filtro.",
+            "courseworks_found": "✅ Actividades encontradas: {total} | después del filtro: {filtered}",
+            "selected_activity": "✅ Actividad seleccionada: {value}",
+            "processing_all_courseworks": "✅ Se procesarán todas las actividades filtradas del curso: {count}",
+            "unknown_scope": "❌ Alcance de descarga no reconocido.",
+            "final_summary": "RESUMEN FINAL",
+            "activities_processed": "Actividades procesadas: {count}",
+            "submissions_seen": "Entregas totales vistas: {count}",
+            "submissions_filter_matched": "Entregas que cumplieron filtro: {count}",
+            "files_downloaded": "Archivos descargados: {count}",
+            "csv_rows": "Filas en CSV: {count}",
+            "all_mode_note": "Nota: en modo 'all' ahora el CSV incluye también alumnos sin entregar.",
+            "base_folder": "Carpeta base: {path}",
+            "zip_path": "ZIP: {path}",
+            "process_done": "✅ Proceso terminado.",
+            "classroom_error": "Error al consultar Classroom: {err}",
+            "deliverable_id": "Entrega ID: {value}",
+            "user_id": "  userId: {value}",
+            "state": "  estado: {value}",
+            "late": "  late: {value}",
+            "assigned_grade": "  assignedGrade: {value}",
+            "draft_grade": "  draftGrade: {value}",
+            "resubmitted": "  reentregada: {value}",
+            "ungraded": "  no evaluada: {value}",
+            "attached": "  attached: {value}",
+        },
+        "feedback": {
+            "no_submission": "Sin entrega enviada. Calificacion automatica en 0.",
+            "manual_review": "Requiere revision manual por tipo de evidencia.",
+            "readable_content": "Contenido legible detectado con {word_count} palabras aprox.",
+            "not_readable": "No se detecto contenido legible automaticamente.",
+            "keyword_hits": "Coincidencias clave: {keywords}.",
+            "late_submission": "Entrega tardia de {days_late} dia(s).",
+            "suggested_grade": "Calificacion automatica sugerida: {auto_score}/100.",
+            "reason_no_submission": "No entrego. Score final 0.",
+            "valid_delivery": "Entrega valida con evidencia detectada",
+            "no_evidence": "Sin evidencia adjunta",
+            "readable": "contenido legible",
+            "not_readable_short": "sin contenido legible",
+            "sufficiency_points": "suficiencia {points} pts",
+            "sufficiency_zero": "suficiencia 0 pts",
+            "keywords_detected": "keywords detectadas: {keywords}",
+            "late_penalty": "penalizacion por tardanza {points} pts",
+            "manual_review_marked": "marcada para revision manual",
+            "evidence_received": "Se recibió evidencia de entrega.",
+            "no_interpretable_evidence": "No se detectó evidencia adjunta ni texto interpretable.",
+            "late_penalty_applied": "Se aplicó penalización por tardanza (-{points}).",
+            "no_late_penalty": "Sin penalización por tardanza.",
+            "manual_review_long": "La evidencia requiere revision manual porque incluye imagenes o formatos no interpretables automaticamente.",
+            "auto_readable_detected": "Se detectó contenido legible automáticamente ({num_palabras} palabras aprox.).",
+            "evidence_not_interpretable": "Se recibio evidencia, pero no fue posible interpretarla automaticamente con las librerias actuales.",
+            "no_readable_for_auto": "No fue posible recuperar contenido legible para evaluacion automatica.",
+            "keywords_detected_long": "Palabras clave detectadas: {keywords}.",
+            "full_sufficiency": "El contenido cumple suficiencia completa según los umbrales configurados.",
+            "partial_sufficiency": "El contenido cumple suficiencia mínima parcial; conviene revisión rápida.",
+            "low_sufficiency": "El contenido detectado es breve o insuficiente según los umbrales configurados.",
+            "compact_late": "tardía",
+            "compact_manual_review": "manual_review",
+            "compact_not_readable": "no_legible",
+            "compact_full": "suficiente",
+            "compact_partial": "parcial",
+            "compact_low": "insuficiente",
+            "compact_valid": "valida",
+        },
+        "fallbacks": {
+            "unnamed_course": "Curso sin nombre",
+            "unnamed_activity": "Actividad sin título",
+            "untitled": "sin_titulo",
+            "course": "curso",
+            "activity": "actividad",
+            "file": "archivo",
+            "no_user_id": "sin_userId",
+            "no_id": "Sin ID",
+            "no_state": "Sin estado",
+            "no_url": "Sin URL",
+            "no_title": "Sin título",
+            "room": "Aula",
+        },
+        "labels": {
+            "submission_status": {
+                "TURNED_IN": "turned_in",
+                "CREATED": "assigned_not_submitted",
+                "RETURNED": "returned",
+                "RECLAIMED_BY_STUDENT": "reclaimed_by_student",
+                "UNKNOWN": "unknown",
+            },
+            "submission_type": {
+                "none": "none",
+                "text_only": "text_only",
+                "image_only": "image_only",
+                "file_only": "file_only",
+                "mixed": "mixed",
+                "link_only": "link_only",
+            },
+            "bool": {
+                True: "true",
+                False: "false",
+            },
+        },
+    },
+    "en": {
+        "ui": {
+            "select": "Select {tipo}:",
+            "enter_number": "Enter number:",
+            "go_back": "Go back",
+            "invalid_option": "❌ Invalid option. Try again.",
+            "final_confirmation": "FINAL CONFIRMATION",
+            "course": "Course",
+            "scope": "Scope",
+            "activity_filter": "Activity filter",
+            "download_mode": "Download mode",
+            "output_format": "Output format",
+            "activity": "Activity",
+            "activities_to_process": "Activities to process",
+            "confirm_download": "Confirm download? (y/n) [y]: ",
+            "download_cancelled": "⏹️ Download cancelled by user.",
+            "invalid_yes_no": "❌ Invalid response. Type 'y' or 'n'.",
+        },
+        "menu": {
+            "download_scope": "the download scope",
+            "download_mode": "a download mode",
+            "output_format": "an output format",
+            "activity_filter": "an activity filter",
+            "course": "a course",
+            "activity": "an activity",
+        },
+        "options": {
+            "single_coursework": "Download a single activity",
+            "all_courseworks": "Download all course activities",
+            "all": "Include all students (submitted and not submitted)",
+            "late_ungraded": "Download only late and ungraded",
+            "folder_only": "Save folder only",
+            "zip_and_folder": "Save folder and generate .zip",
+            "with_submissions": "Only activities with submissions",
+            "all_activities": "All activities",
+        },
+        "descriptions": {
+            "all": "all active submissions",
+            "resubmitted": "only resubmitted and pending reevaluation",
+            "ungraded": "only ungraded",
+            "late": "only late",
+            "resubmitted_ungraded": "only resubmitted and ungraded",
+            "late_ungraded": "only late and ungraded",
+            "unknown_filter": "unknown filter",
+        },
+        "runtime": {
+            "config_read_error": "⚠️ Could not read autograding config at '{path}': {err}",
+            "downloaded": "      ✅ Downloaded: {name}",
+            "download_error": "      ❌ Error downloading '{name}': {err}",
+            "attachments_none": "  attachments: none",
+            "attachments_header": "  attachments:",
+            "link": "    - Link: {title} | url={url}",
+            "form": "    - Form: {title} | url={url}",
+            "youtube": "    - YouTube: {title} | url={url}",
+            "unhandled_attachment": "    - Attachment type not directly handled.",
+            "csv_generated": "✅ CSV generated: {path}",
+            "zip_generated": "✅ ZIP generated: {path}",
+            "processing_activity": "Processing activity: {name}",
+            "no_submissions": "No submissions found for this activity.",
+            "submissions_total": "Total submissions found: {count}",
+            "submissions_filtered": "Submissions to process with this filter: {count}",
+            "submissions_no_match": "No submissions match this filter for this activity.",
+            "user_profile_fallback": "  ⚠️ Could not read userProfiles for userId={user_id}. Fallback will be used. Detail: {err}",
+            "no_submission_download": "  attachments: not applicable, student did not submit",
+            "auth_ok": "Authentication successful.",
+            "token_valid": "Valid token: {value}",
+            "profile_scope_ok": "✅ Profile scope available.",
+            "profile_scope_missing": "⚠️ Token has no scope to read student profiles. Continuing with fallback and CSV may contain empty name/email fields.",
+            "no_courses": "No courses found.",
+            "selected_course": "✅ Selected course: {value}",
+            "selected_scope": "📚 Selected scope: {value}",
+            "selected_filter": "🧩 Activity filter: {value}",
+            "selected_mode": "📥 Selected mode: {value}",
+            "selected_output": "📦 Output format: {value}",
+            "no_courseworks": "No activities found in this course.",
+            "no_courseworks_after_filter": "No activities remained after applying the filter.",
+            "courseworks_found": "✅ Activities found: {total} | after filter: {filtered}",
+            "selected_activity": "✅ Selected activity: {value}",
+            "processing_all_courseworks": "✅ All filtered course activities will be processed: {count}",
+            "unknown_scope": "❌ Unknown download scope.",
+            "final_summary": "FINAL SUMMARY",
+            "activities_processed": "Activities processed: {count}",
+            "submissions_seen": "Total submissions seen: {count}",
+            "submissions_filter_matched": "Submissions matching filter: {count}",
+            "files_downloaded": "Files downloaded: {count}",
+            "csv_rows": "CSV rows: {count}",
+            "all_mode_note": "Note: in 'all' mode the CSV now also includes students with no submission.",
+            "base_folder": "Base folder: {path}",
+            "zip_path": "ZIP: {path}",
+            "process_done": "✅ Process finished.",
+            "classroom_error": "Error querying Classroom: {err}",
+            "deliverable_id": "Submission ID: {value}",
+            "user_id": "  userId: {value}",
+            "state": "  state: {value}",
+            "late": "  late: {value}",
+            "assigned_grade": "  assignedGrade: {value}",
+            "draft_grade": "  draftGrade: {value}",
+            "resubmitted": "  resubmitted: {value}",
+            "ungraded": "  ungraded: {value}",
+            "attached": "  attached: {value}",
+        },
+        "feedback": {
+            "no_submission": "No submission sent. Automatic grade set to 0.",
+            "manual_review": "Requires manual review due to evidence type.",
+            "readable_content": "Readable content detected with about {word_count} words.",
+            "not_readable": "No readable content was detected automatically.",
+            "keyword_hits": "Keyword matches: {keywords}.",
+            "late_submission": "Late submission by {days_late} day(s).",
+            "suggested_grade": "Suggested automatic grade: {auto_score}/100.",
+            "reason_no_submission": "No submission. Final score 0.",
+            "valid_delivery": "Valid submission with detected evidence",
+            "no_evidence": "No attached evidence",
+            "readable": "readable content",
+            "not_readable_short": "no readable content",
+            "sufficiency_points": "sufficiency {points} pts",
+            "sufficiency_zero": "sufficiency 0 pts",
+            "keywords_detected": "keywords detected: {keywords}",
+            "late_penalty": "late penalty {points} pts",
+            "manual_review_marked": "marked for manual review",
+            "evidence_received": "Submission evidence was received.",
+            "no_interpretable_evidence": "No attached evidence or interpretable text was detected.",
+            "late_penalty_applied": "Late penalty applied (-{points}).",
+            "no_late_penalty": "No late penalty.",
+            "manual_review_long": "Evidence requires manual review because it includes images or formats that cannot be interpreted automatically.",
+            "auto_readable_detected": "Readable content detected automatically ({num_palabras} words approx.).",
+            "evidence_not_interpretable": "Evidence was received, but could not be interpreted automatically with the current libraries.",
+            "no_readable_for_auto": "Could not recover readable content for automatic evaluation.",
+            "keywords_detected_long": "Keywords detected: {keywords}.",
+            "full_sufficiency": "Content meets full sufficiency according to configured thresholds.",
+            "partial_sufficiency": "Content meets partial minimum sufficiency; a quick review is recommended.",
+            "low_sufficiency": "Detected content is brief or insufficient according to configured thresholds.",
+            "compact_late": "late",
+            "compact_manual_review": "manual_review",
+            "compact_not_readable": "not_readable",
+            "compact_full": "sufficient",
+            "compact_partial": "partial",
+            "compact_low": "insufficient",
+            "compact_valid": "valid",
+        },
+        "fallbacks": {
+            "unnamed_course": "Untitled course",
+            "unnamed_activity": "Untitled activity",
+            "untitled": "untitled",
+            "course": "course",
+            "activity": "activity",
+            "file": "file",
+            "no_user_id": "no_userId",
+            "no_id": "No ID",
+            "no_state": "No state",
+            "no_url": "No URL",
+            "no_title": "Untitled",
+            "room": "Room",
+        },
+        "labels": {
+            "submission_status": {
+                "TURNED_IN": "turned_in",
+                "CREATED": "assigned_not_submitted",
+                "RETURNED": "returned",
+                "RECLAIMED_BY_STUDENT": "reclaimed_by_student",
+                "UNKNOWN": "unknown",
+            },
+            "submission_type": {
+                "none": "none",
+                "text_only": "text_only",
+                "image_only": "image_only",
+                "file_only": "file_only",
+                "mixed": "mixed",
+                "link_only": "link_only",
+            },
+            "bool": {
+                True: "true",
+                False: "false",
+            },
+        },
+    },
+}
+
+
+def t(key: str, lang: str | None = None, **kwargs: Any) -> str:
+    active_lang = lang or LANG
+    fallback_lang = "es"
+    try:
+        value: Any = I18N[active_lang]
+        for part in key.split("."):
+            value = value[part]
+    except Exception:
+        value = I18N[fallback_lang]
+        for part in key.split("."):
+            value = value[part]
+    if isinstance(value, str):
+        return value.format(**kwargs) if kwargs else value
+    return str(value)
+
+
+def labels() -> dict[str, Any]:
+    return I18N.get(LANG, I18N["es"])["labels"]
+
+
+
 # ==========================================================
 # CSV schema e idiomas configurables
 # ==========================================================
@@ -121,23 +500,7 @@ CSV_OUTPUT_COLUMNS = [
     "final_feedback",
 ]
 
-TEXT_LABELS = {
-    "submission_status": {
-        "TURNED_IN": "turned_in",
-        "CREATED": "assigned_not_submitted",
-        "RETURNED": "returned",
-        "RECLAIMED_BY_STUDENT": "reclaimed_by_student",
-        "UNKNOWN": "unknown",
-    },
-    "submission_type": {
-        "none": "none",
-        "text_only": "text_only",
-        "image_only": "image_only",
-        "file_only": "file_only",
-        "mixed": "mixed",
-        "link_only": "link_only",
-    },
-}
+TEXT_LABELS = labels()
 
 
 def normalizar_ascii_basico(texto: str) -> str:
@@ -151,7 +514,7 @@ def normalizar_ascii_basico(texto: str) -> str:
 
 
 def bool_a_texto(valor: bool) -> str:
-    return "true" if valor else "false"
+    return labels()["bool"][bool(valor)]
 
 
 def obtener_submission_status(submission: dict[str, Any]) -> str:
@@ -238,7 +601,7 @@ def calcular_confidence_score(
     return round(max(0.0, min(1.0, score)), 2)
 
 
-def construir_auto_feedback_es(
+def construir_auto_feedback(
     entrego: bool,
     readable_content: bool,
     manual_review: bool,
@@ -248,28 +611,28 @@ def construir_auto_feedback_es(
     auto_score: int,
 ) -> str:
     if not entrego:
-        return "Sin entrega enviada. Calificacion automatica en 0."
+        return t("feedback.no_submission")
 
     partes: list[str] = []
 
     if manual_review:
-        partes.append("Requiere revision manual por tipo de evidencia.")
+        partes.append(t("feedback.manual_review"))
     elif readable_content:
-        partes.append(f"Contenido legible detectado con {word_count} palabras aprox.")
+        partes.append(t("feedback.readable_content", word_count=word_count))
     else:
-        partes.append("No se detecto contenido legible automaticamente.")
+        partes.append(t("feedback.not_readable"))
 
     if keyword_hits:
-        partes.append(f"Coincidencias clave: {', '.join(keyword_hits)}.")
+        partes.append(t("feedback.keyword_hits", keywords=", ".join(keyword_hits)))
 
     if days_late > 0:
-        partes.append(f"Entrega tardia de {days_late} dia(s).")
+        partes.append(t("feedback.late_submission", days_late=days_late))
 
-    partes.append(f"Calificacion automatica sugerida: {auto_score}/100.")
+    partes.append(t("feedback.suggested_grade", auto_score=auto_score))
     return normalizar_ascii_basico(" ".join(partes))
 
 
-def construir_auto_grading_reason_es(
+def construir_auto_grading_reason(
     entrego: bool,
     has_attachment: bool,
     readable_content: bool,
@@ -279,36 +642,35 @@ def construir_auto_grading_reason_es(
     manual_review: bool,
 ) -> str:
     if not entrego:
-        return "No entrego. Score final 0."
+        return t("feedback.reason_no_submission")
 
     razones: list[str] = []
 
     if has_attachment:
-        razones.append("Entrega valida con evidencia detectada")
+        razones.append(t("feedback.valid_delivery"))
     else:
-        razones.append("Sin evidencia adjunta")
+        razones.append(t("feedback.no_evidence"))
 
     if readable_content:
-        razones.append("contenido legible")
+        razones.append(t("feedback.readable"))
     else:
-        razones.append("sin contenido legible")
+        razones.append(t("feedback.not_readable_short"))
 
     if sufficiency_score > 0:
-        razones.append(f"suficiencia {sufficiency_score} pts")
+        razones.append(t("feedback.sufficiency_points", points=sufficiency_score))
     else:
-        razones.append("suficiencia 0 pts")
+        razones.append(t("feedback.sufficiency_zero"))
 
     if keyword_hits:
-        razones.append(f"keywords detectadas: {', '.join(keyword_hits)}")
+        razones.append(t("feedback.keywords_detected", keywords=", ".join(keyword_hits)))
 
     if penalty_late > 0:
-        razones.append(f"penalizacion por tardanza {penalty_late} pts")
+        razones.append(t("feedback.late_penalty", points=penalty_late))
 
     if manual_review:
-        razones.append("marcada para revision manual")
+        razones.append(t("feedback.manual_review_marked"))
 
     return normalizar_ascii_basico("; ".join(razones) + ".")
-
 
 
 # ==========================================================
@@ -322,7 +684,7 @@ def limpiar_nombre_archivo(texto: str) -> str:
     """
     if not texto or not texto.strip():
         from datetime import datetime
-        return f"archivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        return f"{t('fallbacks.file')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     texto = texto.strip()
     reemplazos = {
@@ -345,7 +707,7 @@ def limpiar_nombre_archivo(texto: str) -> str:
 
     if not texto:
         from datetime import datetime
-        return f"archivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        return f"{t('fallbacks.file')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     return texto
 
@@ -368,7 +730,7 @@ def construir_slug_curso(texto: str, course_id: str) -> str:
     Ejemplo:
     'Seminario Ing. de SW' + id -> 'Seminario Ing. de SW_840182924161'
     """
-    nombre_curso = limpiar_nombre_archivo(texto) or "curso"
+    nombre_curso = limpiar_nombre_archivo(texto) or t("fallbacks.course")
     return f"{nombre_curso}_{course_id}"
 
 
@@ -378,7 +740,7 @@ def construir_slug_actividad(texto: str, actividad_id: str) -> str:
     Ejemplo:
     'P01 - Timing plan' + id -> 'P01 - Timing plan_840182924183'
     """
-    nombre_actividad = limpiar_nombre_archivo(texto) or "actividad"
+    nombre_actividad = limpiar_nombre_archivo(texto) or t("fallbacks.activity")
     return f"{nombre_actividad}_{actividad_id}"
 
 
@@ -460,16 +822,16 @@ def seleccionar_opcion(
     Si permitir_regresar=True, muestra una opción extra para volver.
     """
     while True:
-        print(f"\nSelecciona {tipo}:\n")
+        print(f"\n{t('ui.select', tipo=tipo)}\n")
 
         for i, item in enumerate(lista, start=1):
             print(f"{i}. {item['display_name']}")
 
         opcion_regresar = len(lista) + 1
         if permitir_regresar:
-            print(f"{opcion_regresar}. Regresar")
+            print(f"{opcion_regresar}. {t('ui.go_back')}")
 
-        entrada = input("\nIngresa número: ").strip()
+        entrada = input(f"\n{t('ui.enter_number')} ").strip()
 
         try:
             indice = int(entrada) - 1
@@ -482,7 +844,7 @@ def seleccionar_opcion(
         except ValueError:
             pass
 
-        print("❌ Opción inválida. Intenta de nuevo.")
+        print(t("ui.invalid_option"))
 
 
 def parse_google_datetime(value: str | None) -> datetime | None:
@@ -527,7 +889,7 @@ def cargar_config_autograding() -> dict[str, Any]:
                 if isinstance(data, dict):
                     return combinar_config(DEFAULT_AUTOGRADING_CONFIG, data)
             except Exception as err:
-                print(f"⚠️ No se pudo leer la configuración de autograding en '{ruta}': {err}")
+                print(t("runtime.config_read_error", path=ruta, err=err))
 
     return copy.deepcopy(DEFAULT_AUTOGRADING_CONFIG)
 
@@ -562,7 +924,7 @@ def obtener_nombre_curso_visible(course: dict[str, Any]) -> str:
     Construye un nombre visible único para evitar confusiones
     cuando existen dos cursos con el mismo nombre.
     """
-    name = course.get("name", "Curso sin nombre")
+    name = course.get("name", t("fallbacks.unnamed_course"))
     section = course.get("section", "").strip()
     course_id = course.get("id", "").strip()
     room = course.get("room", "").strip()
@@ -571,7 +933,7 @@ def obtener_nombre_curso_visible(course: dict[str, Any]) -> str:
     if section:
         extras.append(section)
     if room:
-        extras.append(f"Aula: {room}")
+        extras.append(f"{t('fallbacks.room')}: {room}")
     if course_id:
         extras.append(f"id={course_id}")
 
@@ -582,7 +944,7 @@ def obtener_nombre_actividad_visible(coursework: dict[str, Any]) -> str:
     """
     Construye un nombre más legible para la actividad.
     """
-    title = coursework.get("title", "Actividad sin título")
+    title = coursework.get("title", t("fallbacks.unnamed_activity"))
     coursework_id = coursework.get("id", "")
     work_type = coursework.get("workType", "")
     max_points = coursework.get("maxPoints")
@@ -610,16 +972,16 @@ def seleccionar_alcance_descarga(permitir_regresar: bool = False) -> str | None:
     opciones = [
         {
             "id": "single_coursework",
-            "display_name": "Descargar una sola actividad",
+            "display_name": t("options.single_coursework"),
         },
         {
             "id": "all_courseworks",
-            "display_name": "Descargar todas las actividades del curso",
+            "display_name": t("options.all_courseworks"),
         },
     ]
     seleccion = seleccionar_opcion(
         opciones,
-        "el alcance de la descarga",
+        t("menu.download_scope"),
         permitir_regresar=permitir_regresar,
     )
     return seleccion["id"] if seleccion else None
@@ -630,15 +992,15 @@ def seleccionar_modo_descarga(permitir_regresar: bool = False) -> str | None:
     Define qué entregas se descargarán.
     """
     opciones = [
-        {"id": "all", "display_name": "Incluir todos los alumnos (entregados y no entregados)"},
+        {"id": "all", "display_name": t("options.all")},
         {
             "id": "late_ungraded",
-            "display_name": "Bajar solo tardías y no evaluadas",
+            "display_name": t("options.late_ungraded"),
         },
     ]
     seleccion = seleccionar_opcion(
         opciones,
-        "un modo de descarga",
+        t("menu.download_mode"),
         permitir_regresar=permitir_regresar,
     )
     return seleccion["id"] if seleccion else None
@@ -649,12 +1011,12 @@ def seleccionar_formato_salida(permitir_regresar: bool = False) -> str | None:
     Define si solo se guarda en carpeta o también en zip.
     """
     opciones = [
-        {"id": "folder_only", "display_name": "Guardar solo en carpeta"},
-        {"id": "zip_and_folder", "display_name": "Guardar en carpeta y generar .zip"},
+        {"id": "folder_only", "display_name": t("options.folder_only")},
+        {"id": "zip_and_folder", "display_name": t("options.zip_and_folder")},
     ]
     seleccion = seleccionar_opcion(
         opciones,
-        "un formato de salida",
+        t("menu.output_format"),
         permitir_regresar=permitir_regresar,
     )
     return seleccion["id"] if seleccion else None
@@ -666,12 +1028,12 @@ def seleccionar_filtro_actividades(permitir_regresar: bool = False) -> str | Non
     antes de elegir una o antes de procesarlas todas.
     """
     opciones = [
-        {"id": "all", "display_name": "Todas las actividades"},
-        {"id": "with_submissions", "display_name": "Solo actividades con entregas"},
+        {"id": "all", "display_name": t("options.all_activities")},
+        {"id": "with_submissions", "display_name": t("options.with_submissions")},
     ]
     seleccion = seleccionar_opcion(
         opciones,
-        "un filtro de actividades",
+        t("menu.activity_filter"),
         permitir_regresar=permitir_regresar,
     )
     return seleccion["id"] if seleccion else None
@@ -679,14 +1041,14 @@ def seleccionar_filtro_actividades(permitir_regresar: bool = False) -> str | Non
 
 def describir_modo_descarga(modo_descarga: str) -> str:
     descripciones = {
-        "all": "todas las entregas activas",
-        "resubmitted": "solo reentregadas y pendientes de reevaluación",
-        "ungraded": "solo no evaluadas",
-        "late": "solo tardías",
-        "resubmitted_ungraded": "solo reentregadas y no evaluadas",
-        "late_ungraded": "solo tardías y no evaluadas",
+        "all": t("descriptions.all"),
+        "resubmitted": t("descriptions.resubmitted"),
+        "ungraded": t("descriptions.ungraded"),
+        "late": t("descriptions.late"),
+        "resubmitted_ungraded": t("descriptions.resubmitted_ungraded"),
+        "late_ungraded": t("descriptions.late_ungraded"),
     }
-    return descripciones.get(modo_descarga, "filtro desconocido")
+    return descripciones.get(modo_descarga, t("descriptions.unknown_filter"))
 
 
 def confirmar_descarga_resumen(
@@ -702,35 +1064,35 @@ def confirmar_descarga_resumen(
     Pide confirmación final antes de iniciar la descarga real.
     """
     print("\n" + "=" * 90)
-    print("CONFIRMACION FINAL")
+    print(t("ui.final_confirmation"))
     print("=" * 90)
-    print(f"Curso: {course_display}")
-    print(f"Alcance: {alcance_descarga}")
-    print(f"Filtro de actividades: {filtro_actividades}")
-    print(f"Modo de descarga: {describir_modo_descarga(modo_descarga)}")
-    print(f"Formato de salida: {formato_salida}")
+    print(f"{t('ui.course')}: {course_display}")
+    print(f"{t('ui.scope')}: {alcance_descarga}")
+    print(f"{t('ui.activity_filter')}: {filtro_actividades}")
+    print(f"{t('ui.download_mode')}: {describir_modo_descarga(modo_descarga)}")
+    print(f"{t('ui.output_format')}: {formato_salida}")
 
     if actividad_seleccionada is not None:
-        print(f"Actividad: {actividad_seleccionada.get('display_name', actividad_seleccionada.get('title', 'sin_titulo'))}")
+        print(f"{t('ui.activity')}: {actividad_seleccionada.get('display_name', actividad_seleccionada.get('title', t('fallbacks.untitled')))}")
     else:
-        print(f"Actividades a procesar: {total_actividades}")
+        print(f"{t('ui.activities_to_process')}: {total_actividades}")
 
     
         
         
         
     while True:
-        entrada = input("\n¿Confirmar descarga? (s/n) [s]: ").strip().lower()
+        entrada = input(f"\n{t('ui.confirm_download')}").strip().lower()
 
         if entrada == "":
             return True
-        if entrada in {"s", "si", "sí"}:
+        if entrada in {"s", "si", "sí", "y", "yes"}:
             return True
         if entrada in {"n", "no"}:
-            print("⏹️ Descarga cancelada por el usuario.")
+            print(t("ui.download_cancelled"))
             return False
 
-        print("❌ Respuesta inválida. Escribe 's' o 'n'.")
+        print(t("ui.invalid_yes_no"))
 
 
 def obtener_directorio_exportacion(settings) -> str:
@@ -788,7 +1150,7 @@ def download_file(
         # Fuente de verdad:
         # 1) name real de Drive
         # 2) si no viene, usar file_name recibido
-        real_name = meta.get("name") or file_name or "archivo"
+        real_name = meta.get("name") or file_name or t("fallbacks.file")
         real_mime = meta.get("mimeType") or mime_type or ""
 
         safe_name = limpiar_nombre_archivo(real_name)
@@ -804,11 +1166,11 @@ def download_file(
             while not done:
                 _, done = downloader.next_chunk()
 
-        print(f"      ✅ Descargado: {safe_name}")
+        print(t("runtime.downloaded", name=safe_name))
         return file_path
 
     except HttpError as err:
-        print(f"      ❌ Error al descargar '{file_name}': {err}")
+        print(t("runtime.download_error", name=file_name, err=err))
         return None
 
 
@@ -1526,48 +1888,48 @@ def construir_feedback(
 
     # 1) Evidencia
     if has_attachment:
-        mensajes.append("Se recibió evidencia de entrega.")
+        mensajes.append(t("feedback.evidence_received"))
     else:
-        mensajes.append("No se detectó evidencia adjunta ni texto interpretable.")
+        mensajes.append(t("feedback.no_interpretable_evidence"))
 
     # 2) Tardanza
     if late and penalty_late > 0:
-        mensajes.append(f"Se aplicó penalización por tardanza (-{penalty_late}).")
+        mensajes.append(t("feedback.late_penalty_applied", points=penalty_late))
     else:
-        mensajes.append("Sin penalización por tardanza.")
+        mensajes.append(t("feedback.no_late_penalty"))
 
     # 3) Estado de lectura
     if manual_review:
         mensajes.append(
-            "La evidencia requiere revisión manual porque incluye imágenes o formatos no interpretables automáticamente."
+            t("feedback.manual_review_long")
         )
     elif archivos_leidos > 0 and contenido_legible:
         mensajes.append(
-            f"Se detectó contenido legible automáticamente ({num_palabras} palabras aprox.)."
+            t("feedback.auto_readable_detected", num_palabras=num_palabras)
         )
     elif has_attachment:
         mensajes.append(
-            "Se recibió evidencia, pero no fue posible interpretarla automáticamente con las librerías actuales."
+            t("feedback.evidence_not_interpretable")
         )
     else:
         mensajes.append(
-            "No fue posible recuperar contenido legible para evaluación automática."
+            t("feedback.no_readable_for_auto")
         )
 
     # 4) Keywords: solo se informan si sí existen
     if keyword_hits:
-        mensajes.append(f"Palabras clave detectadas: {', '.join(keyword_hits)}.")
+        mensajes.append(t("feedback.keywords_detected_long", keywords=", ".join(keyword_hits)))
 
     # 5) Suficiencia
     if sufficiency_level == "full":
-        mensajes.append("El contenido cumple suficiencia completa según los umbrales configurados.")
+        mensajes.append(t("feedback.full_sufficiency"))
     elif sufficiency_level == "partial":
-        mensajes.append("El contenido cumple suficiencia mínima parcial; conviene revisión rápida.")
+        mensajes.append(t("feedback.partial_sufficiency"))
     else:
-        mensajes.append("El contenido detectado es breve o insuficiente según los umbrales configurados.")
+        mensajes.append(t("feedback.low_sufficiency"))
 
     # 6) Cierre
-    mensajes.append(f"Calificación automática sugerida: {auto_grade}/100.")
+    mensajes.append(t("feedback.suggested_grade", auto_score=auto_grade))
     return " ".join(mensajes)
 
 
@@ -1588,22 +1950,22 @@ def construir_feedback_corto(
     tags: list[str] = []
 
     if late:
-        tags.append("tardía")
+        tags.append(t("feedback.compact_late"))
 
     if manual_review:
-        tags.append("manual_review")
+        tags.append(t("feedback.compact_manual_review"))
     elif not contenido_legible:
-        tags.append("no_legible")
+        tags.append(t("feedback.compact_not_readable"))
 
     if sufficiency_level == "full":
-        tags.append("suficiente")
+        tags.append(t("feedback.compact_full"))
     elif sufficiency_level == "partial":
-        tags.append("parcial")
+        tags.append(t("feedback.compact_partial"))
     else:
-        tags.append("insuficiente")
+        tags.append(t("feedback.compact_low"))
 
     if not tags:
-        return "valida"
+        return t("feedback.compact_valid")
 
     return " | ".join(tags)
 
@@ -1692,7 +2054,7 @@ def evaluar_entrega_automatica(
         keyword_hits_count=len(keyword_hits_list),
         submission_type=submission_type,
     )
-    auto_feedback = construir_auto_feedback_es(
+    auto_feedback = construir_auto_feedback(
         entrego=entrego,
         readable_content=bool(analisis["contenido_legible"]),
         manual_review=manual_review,
@@ -1701,7 +2063,7 @@ def evaluar_entrega_automatica(
         keyword_hits=keyword_hits_list,
         auto_score=auto_grade,
     )
-    auto_grading_reason = construir_auto_grading_reason_es(
+    auto_grading_reason = construir_auto_grading_reason(
         entrego=entrego,
         has_attachment=has_attachment,
         readable_content=bool(analisis["contenido_legible"]),
@@ -1744,15 +2106,15 @@ def imprimir_resumen_entrega(submission: dict[str, Any]) -> None:
     """
     Imprime información útil para la revisión en terminal.
     """
-    print(f"Entrega ID: {submission.get('id', 'Sin ID')}")
-    print(f"  userId: {submission.get('userId', 'Sin userId')}")
-    print(f"  estado: {submission.get('state', 'Sin estado')}")
-    print(f"  late: {submission.get('late', False)}")
-    print(f"  assignedGrade: {submission.get('assignedGrade')}")
-    print(f"  draftGrade: {submission.get('draftGrade')}")
-    print(f"  reentregada: {es_reentregada(submission)}")
-    print(f"  no evaluada: {es_no_evaluada(submission)}")
-    print(f"  attached: {tiene_adjuntos(submission)}")
+    print(t("runtime.deliverable_id", value=submission.get("id", t("fallbacks.no_id"))))
+    print(t("runtime.user_id", value=submission.get("userId", t("fallbacks.no_user_id"))))
+    print(t("runtime.state", value=submission.get("state", t("fallbacks.no_state"))))
+    print(t("runtime.late", value=submission.get("late", False)))
+    print(t("runtime.assigned_grade", value=submission.get("assignedGrade")))
+    print(t("runtime.draft_grade", value=submission.get("draftGrade")))
+    print(t("runtime.resubmitted", value=es_reentregada(submission)))
+    print(t("runtime.ungraded", value=es_no_evaluada(submission)))
+    print(t("runtime.attached", value=tiene_adjuntos(submission)))
 
 
 def descargar_adjuntos_entrega(
@@ -1768,10 +2130,10 @@ def descargar_adjuntos_entrega(
     rutas_descargadas: list[str] = []
 
     if not attachments:
-        print("  adjuntos: ninguno")
+        print(t("runtime.attachments_none"))
         return rutas_descargadas
 
-    print("  adjuntos:")
+    print(t("runtime.attachments_header"))
 
     for att in attachments:
         if "driveFile" in att:
@@ -1797,27 +2159,18 @@ def descargar_adjuntos_entrega(
 
         elif "link" in att:
             link = att["link"]
-            print(
-                f"    - Link: {link.get('title', 'Sin título')} "
-                f"| url={link.get('url', 'Sin URL')}"
-            )
+            print(t("runtime.link", title=link.get("title", t("fallbacks.no_title")), url=link.get("url", t("fallbacks.no_url"))))
 
         elif "form" in att:
             form = att["form"]
-            print(
-                f"    - Form: {form.get('title', 'Sin título')} "
-                f"| url={form.get('formUrl', 'Sin URL')}"
-            )
+            print(t("runtime.form", title=form.get("title", t("fallbacks.no_title")), url=form.get("formUrl", t("fallbacks.no_url"))))
 
         elif "youTubeVideo" in att:
             video = att["youTubeVideo"]
-            print(
-                f"    - YouTube: {video.get('title', 'Sin título')} "
-                f"| url={video.get('alternateLink', 'Sin URL')}"
-            )
+            print(t("runtime.youtube", title=video.get("title", t("fallbacks.no_title")), url=video.get("alternateLink", t("fallbacks.no_url"))))
 
         else:
-            print("    - Tipo de adjunto no manejado directamente.")
+            print(t("runtime.unhandled_attachment"))
 
     return rutas_descargadas
 
@@ -1843,7 +2196,7 @@ def escribir_csv_resumen(csv_path: str, filas: list[dict[str, str]]) -> None:
             row = {col: fila.get(col, "") for col in CSV_OUTPUT_COLUMNS}
             writer.writerow(row)
 
-    print(f"\n✅ CSV generado: {csv_path}")
+    print(f"\n{t('runtime.csv_generated', path=csv_path)}")
 
 
 def comprimir_carpeta_a_zip(carpeta_origen: str, zip_sin_extension: str) -> str:
@@ -1851,7 +2204,7 @@ def comprimir_carpeta_a_zip(carpeta_origen: str, zip_sin_extension: str) -> str:
     Comprime toda la carpeta en un zip.
     """
     zip_path = shutil.make_archive(zip_sin_extension, "zip", carpeta_origen)
-    print(f"✅ ZIP generado: {zip_path}")
+    print(t("runtime.zip_generated", path=zip_path))
     return zip_path
 
 
@@ -1880,14 +2233,14 @@ def procesar_actividad(
     - actualiza estadísticas
     """
     course_id = course["id"]
-    course_name = course.get("name", f"curso_{course_id}")
+    course_name = course.get("name", f"{t('fallbacks.course')}_{course_id}")
 
     coursework_id = coursework["id"]
-    coursework_title = coursework.get("title", f"actividad_{coursework_id}")
+    coursework_title = coursework.get("title", f"{t('fallbacks.activity')}_{coursework_id}")
     coursework_display = coursework.get("display_name", coursework_title)
 
     print("\n" + "=" * 90)
-    print(f"Procesando actividad: {coursework_display}")
+    print(t("runtime.processing_activity", name=coursework_display))
     print("=" * 90)
 
     submissions = obtener_todas_las_entregas(
@@ -1900,17 +2253,17 @@ def procesar_actividad(
     estadisticas["entregas_totales"] += len(submissions)
 
     if not submissions:
-        print("No se encontraron entregas para esta actividad.")
+        print(t("runtime.no_submissions"))
         return
 
     entregas_filtradas = filtrar_entregas(submissions, modo_descarga)
     estadisticas["entregas_filtradas"] += len(entregas_filtradas)
 
-    print(f"Entregas totales encontradas: {len(submissions)}")
-    print(f"Entregas a procesar con este filtro: {len(entregas_filtradas)}")
+    print(t("runtime.submissions_total", count=len(submissions)))
+    print(t("runtime.submissions_filtered", count=len(entregas_filtradas)))
 
     if not entregas_filtradas:
-        print("No hay entregas que coincidan con el filtro para esta actividad.")
+        print(t("runtime.submissions_no_match"))
         return
 
     nombre_carpeta_actividad = construir_slug_actividad(coursework_title, coursework_id)
@@ -1932,7 +2285,7 @@ def procesar_actividad(
     for submission in entregas_filtradas:
         imprimir_resumen_entrega(submission)
 
-        user_id = submission.get("userId", "sin_userId")
+        user_id = submission.get("userId", t("fallbacks.no_user_id"))
 
         if user_id not in perfiles_cache:
             perfil = {
@@ -1950,8 +2303,7 @@ def procesar_actividad(
                     )
                 except HttpError as err:
                     print(
-                        f"  ⚠️ No se pudo leer userProfiles para userId={user_id}. "
-                        f"Se usará fallback. Detalle: {err}"
+                        t("runtime.user_profile_fallback", user_id=user_id, err=err)
                     )
                     perfil = extraer_datos_usuario_desde_historial(submission)
 
@@ -1989,13 +2341,13 @@ def procesar_actividad(
                 autograding_config=AUTOGRADING_CONFIG,
             )
         else:
-            print("  adjuntos: no aplica, alumno sin entrega enviada")
+            print(t("runtime.no_submission_download"))
             evaluacion = {
                 "auto_grade": 0,
                 "auto_score": 0,
-                "feedback": "Sin entrega enviada. Calificacion automatica en 0.",
-                "auto_feedback": "Sin entrega enviada. Calificacion automatica en 0.",
-                "auto_grading_reason": "No entrego. Score final 0.",
+                "feedback": t("feedback.no_submission"),
+                "auto_feedback": t("feedback.no_submission"),
+                "auto_grading_reason": t("feedback.reason_no_submission"),
                 "confidence_score": 1.0,
                 "submission_type": TEXT_LABELS["submission_type"]["none"],
                 "primary_file_type": "",
@@ -2082,8 +2434,8 @@ def main() -> None:
         token_path=settings.token_path,
     )
 
-    print("Autenticación correcta.")
-    print(f"Token válido: {creds.valid}")
+    print(t("runtime.auth_ok"))
+    print(t("runtime.token_valid", value=creds.valid))
 
     try:
         classroom_service = build("classroom", "v1", credentials=creds)
@@ -2091,23 +2443,20 @@ def main() -> None:
 
         profile_scope_disponible = detectar_scope_perfil(classroom_service)
         if profile_scope_disponible:
-            print("✅ Scope de perfiles disponible.")
+            print(t("runtime.profile_scope_ok"))
         else:
-            print(
-                "⚠️ El token no tiene scope para leer perfiles de alumnos. "
-                "Se continuará con fallback y el CSV puede traer nombre/correo vacíos."
-            )
+            print(t("runtime.profile_scope_missing"))
 
         courses = obtener_todos_los_cursos(classroom_service)
 
         if not courses:
-            print("No se encontraron cursos.")
+            print(t("runtime.no_courses"))
             return
 
         while True:
             selected_course = seleccionar_opcion(
                 courses,
-                "un curso",
+                t("menu.course"),
                 permitir_regresar=False,
             )
             if selected_course is None:
@@ -2120,43 +2469,43 @@ def main() -> None:
             )
             course_display = selected_course.get(
                 "display_name",
-                selected_course.get("name", "Curso"),
+                selected_course.get("name", t("fallbacks.unnamed_course")),
             )
 
-            print(f"\n✅ Curso seleccionado: {course_display}")
+            print(f"\n{t('runtime.selected_course', value=course_display)}")
 
             while True:
                 alcance_descarga = seleccionar_alcance_descarga(permitir_regresar=True)
                 if alcance_descarga is None:
                     break
 
-                print(f"\n📚 Alcance seleccionado: {alcance_descarga}")
+                print(f"\n{t('runtime.selected_scope', value=alcance_descarga)}")
 
                 while True:
                     filtro_actividades = seleccionar_filtro_actividades(permitir_regresar=True)
                     if filtro_actividades is None:
                         break
 
-                    print(f"\n🧩 Filtro de actividades: {filtro_actividades}")
+                    print(f"\n{t('runtime.selected_filter', value=filtro_actividades)}")
 
                     while True:
                         modo_descarga = seleccionar_modo_descarga(permitir_regresar=True)
                         if modo_descarga is None:
                             break
 
-                        print(f"\n📥 Modo seleccionado: {describir_modo_descarga(modo_descarga)}")
+                        print(f"\n{t('runtime.selected_mode', value=describir_modo_descarga(modo_descarga))}")
 
                         while True:
                             formato_salida = seleccionar_formato_salida(permitir_regresar=True)
                             if formato_salida is None:
                                 break
 
-                            print(f"📦 Formato de salida: {formato_salida}")
+                            print(t("runtime.selected_output", value=formato_salida))
 
                             courseworks = obtener_todas_las_actividades(classroom_service, course_id)
 
                             if not courseworks:
-                                print("No se encontraron actividades en este curso.")
+                                print(t("runtime.no_courseworks"))
                                 break
 
                             courseworks_filtradas = filtrar_actividades(
@@ -2167,13 +2516,10 @@ def main() -> None:
                             )
 
                             if not courseworks_filtradas:
-                                print("No quedaron actividades después de aplicar el filtro.")
+                                print(t("runtime.no_courseworks_after_filter"))
                                 break
 
-                            print(
-                                f"✅ Actividades encontradas: {len(courseworks)} | "
-                                f"después del filtro: {len(courseworks_filtradas)}"
-                            )
+                            print(t("runtime.courseworks_found", total=len(courseworks), filtered=len(courseworks_filtradas)))
 
                             perfiles_cache: dict[str, dict[str, str]] = {}
                             filas_csv: list[dict[str, str]] = []
@@ -2192,13 +2538,13 @@ def main() -> None:
                             if alcance_descarga == "single_coursework":
                                 selected_coursework = seleccionar_opcion(
                                     courseworks_filtradas,
-                                    "una actividad",
+                                    t("menu.activity"),
                                     permitir_regresar=True,
                                 )
                                 if selected_coursework is None:
                                     continue
 
-                                print(f"\n✅ Actividad seleccionada: {selected_coursework['display_name']}")
+                                print(f"\n{t('runtime.selected_activity', value=selected_coursework['display_name'])}")
 
                                 confirmado = confirmar_descarga_resumen(
                                     course_display=course_display,
@@ -2251,10 +2597,7 @@ def main() -> None:
                                     limpiar_si_existe=True,
                                 )
 
-                                print(
-                                    f"\n✅ Se procesarán todas las actividades filtradas del curso: "
-                                    f"{len(courseworks_filtradas)}"
-                                )
+                                print(f"\n{t('runtime.processing_all_courseworks', count=len(courseworks_filtradas))}")
 
                                 for idx, coursework in enumerate(courseworks_filtradas, start=1):
                                     print(f"\n[{idx}/{len(courseworks_filtradas)}] {coursework['display_name']}")
@@ -2276,7 +2619,7 @@ def main() -> None:
                                 nombre_zip = course_slug
 
                             else:
-                                print("❌ Alcance de descarga no reconocido.")
+                                print(t("runtime.unknown_scope"))
                                 continue
 
                             csv_path = os.path.join(carpeta_base, nombre_csv)
@@ -2287,24 +2630,24 @@ def main() -> None:
                                 comprimir_carpeta_a_zip(carpeta_base, zip_base_name)
 
                             print("\n" + "=" * 90)
-                            print("RESUMEN FINAL")
+                            print(t("runtime.final_summary"))
                             print("=" * 90)
-                            print(f"Curso: {course_display}")
-                            print(f"Actividades procesadas: {estadisticas['actividades_procesadas']}")
-                            print(f"Entregas totales vistas: {estadisticas['entregas_totales']}")
-                            print(f"Entregas que cumplieron filtro: {estadisticas['entregas_filtradas']}")
-                            print(f"Archivos descargados: {estadisticas['archivos_descargados']}")
-                            print(f"Filas en CSV: {len(filas_csv)}")
-                            print("Nota: en modo 'all' ahora el CSV incluye también alumnos sin entregar.")
-                            print(f"Carpeta base: {carpeta_base}")
+                            print(f"{t('ui.course')}: {course_display}")
+                            print(t("runtime.activities_processed", count=estadisticas["actividades_procesadas"]))
+                            print(t("runtime.submissions_seen", count=estadisticas["entregas_totales"]))
+                            print(t("runtime.submissions_filter_matched", count=estadisticas["entregas_filtradas"]))
+                            print(t("runtime.files_downloaded", count=estadisticas["archivos_descargados"]))
+                            print(t("runtime.csv_rows", count=len(filas_csv)))
+                            print(t("runtime.all_mode_note"))
+                            print(t("runtime.base_folder", path=carpeta_base))
                             if formato_salida == "zip_and_folder":
-                                print(f"ZIP: {os.path.join(directorio_exportacion, nombre_zip)}.zip")
+                                print(t("runtime.zip_path", path=f"{os.path.join(directorio_exportacion, nombre_zip)}.zip"))
 
-                            print("\n✅ Proceso terminado.")
+                            print(f"\n{t('runtime.process_done')}")
                             return
 
     except HttpError as err:
-        print(f"Error al consultar Classroom: {err}")
+        print(t("runtime.classroom_error", err=err))
 
 
 if __name__ == "__main__":
